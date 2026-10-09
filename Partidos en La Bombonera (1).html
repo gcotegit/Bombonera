@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Partidos en La Bombonera</title>
+  <style>
+    :root {
+      --bg-main: #050b18;
+      --card-bg: #0d1b3e;
+      --card-hover: #132450;
+      --boca-gold: #ffc700;
+      --boca-gold-dim: rgba(255, 199, 0, 0.15);
+      --boca-blue: #003882;
+      --boca-blue-dark: #001f4d;
+      --text-white: #f8fafc;
+      --text-gray: #94a3b8;
+      --border-blue: #1b3570;
+      --tag-rival: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-white);
+      padding: 24px 16px 48px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .badge-top {
+      display: inline-block;
+      background: var(--boca-gold-dim);
+      border: 1px solid var(--boca-gold);
+      color: var(--boca-gold);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    header h1 {
+      color: #ffffff;
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    header h1 span {
+      color: var(--boca-gold);
+    }
+
+    header p {
+      color: var(--text-gray);
+      font-size: 0.88rem;
+      margin-top: 6px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: #09142b;
+      border: 1px solid var(--border-blue);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--boca-gold);
+    }
+
+    .year-filter-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+
+    .year-filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-btn {
+      background: #0c1833;
+      border: 1px solid var(--border-blue);
+      color: var(--text-gray);
+      padding: 7px 15px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active {
+      background: var(--boca-gold);
+      color: #071126;
+      border-color: var(--boca-gold);
+      font-weight: 700;
+    }
+
+    .match-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .match-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-blue);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .match-card:hover {
+      border-color: rgba(255, 199, 0, 0.6);
+      box-shadow: 0 4px 18px rgba(0, 56, 130, 0.35);
+    }
+
+    .match-card.open {
+      border-color: var(--boca-gold);
+    }
+
+    .match-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      user-select: none;
+    }
+
+    .match-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .match-meta {
+      font-size: 0.74rem;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+
+    .match-rival {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .score-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #08142d;
+      border: 1px solid var(--border-blue);
+      border-radius: 20px;
+      padding: 6px 14px;
+      flex-shrink: 0;
+    }
+
+    .score-text {
+      color: var(--boca-gold);
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    .arrow-icon {
+      font-size: 0.75rem;
+      color: var(--text-gray);
+      transition: transform 0.25s ease;
+    }
+
+    .match-card.open .arrow-icon {
+      transform: rotate(180deg);
+      color: var(--boca-gold);
+    }
+
+    .match-details {
+      display: none;
+      background: #081329;
+      border-top: 1px solid rgba(255, 199, 0, 0.15);
+      padding: 16px;
+    }
+
+    .match-card.open .match-details {
+      display: block;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      color: var(--boca-gold);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+    }
+
+    .goals-container {
+      margin-bottom: 14px;
+    }
+
+    .goals-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .goal-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.86rem;
+    }
+
+    .goal-min {
+      color: var(--boca-gold);
+      font-weight: 700;
+      min-width: 32px;
+      font-size: 0.8rem;
+    }
+
+    .tag-team {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .tag-team.boca {
+      background: var(--boca-blue);
+      color: #fff;
+    }
+
+    .tag-team.rival {
+      background: var(--tag-rival);
+      color: #e2e8f0;
+    }
+
+    .goal-player {
+      color: #f1f5f9;
+    }
+
+    .no-goals {
+      font-size: 0.82rem;
+      color: var(--text-gray);
+      font-style: italic;
+    }
+
+    .match-story {
+      font-size: 0.86rem;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--text-gray);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <span class="badge-top">Historial Personal</span>
+      <h1>Mis Partidos en <span>La Bombonera</span></h1>
+      <p>Tocá cualquier partido para ver los goles, autores, minutos y la crónica.</p>
+    </header>
+
+    <div class="controls">
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar por rival o torneo..." oninput="handleFilter()">
+      <div class="year-filter-bar" id="yearFilters">
+        <button class="filter-btn active" onclick="setYear('todos')">Todos</button>
+        <button class="filter-btn" onclick="setYear('2019')">2019</button>
+        <button class="filter-btn" onclick="setYear('2020')">2020</button>
+        <button class="filter-btn" onclick="setYear('2021')">2021</button>
+        <button class="filter-btn" onclick="setYear('2022')">2022</button>
+        <button class="filter-btn" onclick="setYear('2023')">2023</button>
+        <button class="filter-btn" onclick="setYear('2024')">2024</button>
+        <button class="filter-btn" onclick="setYear('2025')">2025</button>
+        <button class="filter-btn" onclick="setYear('2026')">2026</button>
+      </div>
+    </div>
+
+    <div class="match-list" id="matchesContainer"></div>
+  </div>
+
+  <script>
+    const partidos = [
+      {
+        id: 1,
+        year: "2019",
+        fecha: "09/05/2019",
+        torneo: "Copa Libertadores • Fase de Grupos",
+        rival: "Athletico Paranaense",
+        marcador: "Boca 2 - 1 Paranaense",
+        goles: [
+          { minuto: "66'", jugador: "Marco Ruben", equipo: "rival" },
+          { minuto: "72'", jugador: "Lisandro López", equipo: "boca" },
+          { minuto: "90+5'", jugador: "Carlos Tevez", equipo: "boca" }
+        ],
+        cronica: "Triunfo agónico en la última fecha del grupo para adueñarse del primer puesto. Boca lo dio vuelta en el último segundo con un violento derechazo de Tevez desde afuera del área."
+      },
+      {
+        id: 2,
+        year: "2019",
+        fecha: "26/05/2019",
+        torneo: "Copa de la Superliga • Semifinal (Vuelta)",
+        rival: "Argentinos Juniors",
+        marcador: "Boca 1 - 0 Argentinos",
+        goles: [
+          { minuto: "55'", jugador: "Lisandro López", equipo: "boca" }
+        ],
+        cronica: "Tras el 0-0 en La Paternal, Boca selló el pasaje a la final gracias a un frentazo preciso de Lisandro López tras una pelota parada ejecutada por Mauro Zárate."
+      },
+      {
+        id: 3,
+        year: "2019",
+        fecha: "28/07/2019",
+        torneo: "Superliga 2019/20 • Fecha 1",
+        rival: "Huracán",
+        marcador: "Boca 0 - 0 Huracán",
+        goles: [],
+        cronica: "Arranque del torneo local con equipo alternativo pensando en la Copa Libertadores. Encuentro muy trabado en el mediocampo sin grandes ocasiones de peligro."
+      },
+      {
+        id: 4,
+        year: "2019",
+        fecha: "31/07/2019",
+        torneo: "Copa Libertadores • Octavos (Vuelta)",
+        rival: "Athletico Paranaense",
+        marcador: "Boca 2 - 0 Paranaense",
+        goles: [
+          { minuto: "57'", jugador: "Ramón 'Wanchope' Ábila", equipo: "boca" },
+          { minuto: "90+5'", jugador: "Eduardo Salvio", equipo: "boca" }
+        ],
+        cronica: "Noche de fiesta copera para clasificar a cuartos. Wanchope abrió el marcador con un potente disparo al primer palo y Salvio sentenció la serie de contra en el descuento."
+      },
+      {
+        id: 5,
+        year: "2019",
+        fecha: "28/08/2019",
+        torneo: "Copa Libertadores • Cuartos (Vuelta)",
+        rival: "Liga de Quito",
+        marcador: "Boca 0 - 0 Liga de Quito",
+        goles: [],
+        cronica: "Boca administró el 3-0 conseguido en la altura de Quito. Aseguró la clasificación a semifinales manteniendo la valla invicta sin sobresaltos."
+      },
+      {
+        id: 6,
+        year: "2019",
+        fecha: "15/09/2019",
+        torneo: "Superliga 2019/20 • Fecha 6",
+        rival: "Estudiantes LP",
+        marcador: "Boca 1 - 0 Estudiantes",
+        goles: [
+          { minuto: "4'", jugador: "Emanuel 'Bebelo' Reynoso", equipo: "boca" }
+        ],
+        cronica: "Boca golpeó al inicio tras aprovechar un rebote de Andújar y controló el ritmo del partido para mantenerse en la punta del campeonato."
+      },
+      {
+        id: 7,
+        year: "2019",
+        fecha: "28/09/2019",
+        torneo: "Superliga 2019/20 • Fecha 8",
+        rival: "Newell's Old Boys",
+        marcador: "Boca 1 - 1 Newell's",
+        goles: [
+          { minuto: "31'", jugador: "Carlos Izquierdoz", equipo: "boca" },
+          { minuto: "80'", jugador: "Cristian Insaurralde", equipo: "rival" }
+        ],
+        cronica: "Boca lo ganaba con un cabezazo de Izquierdoz pero Newell's igualó sobre el final. El equipo jugó cuidando titulares de cara a las semifinales de América."
+      },
+      {
+        id: 8,
+        year: "2019",
+        fecha: "22/10/2019",
+        torneo: "Copa Libertadores • Semifinal (Vuelta)",
+        rival: "River Plate",
+        marcador: "Boca 1 - 0 River Plate",
+        goles: [
+          { minuto: "80'", jugador: "Jan Hurtado", equipo: "boca" }
+        ],
+        cronica: "Una Bombonera encendida empujó durante los 90 minutos. El gol de Hurtado cerca del final encendió la ilusión, pero no alcanzó para revertir el resultado global."
+      },
+      {
+        id: 9,
+        year: "2019",
+        fecha: "30/11/2019",
+        torneo: "Superliga 2019/20 • Fecha 15",
+        rival: "Argentinos Juniors",
+        marcador: "Boca 1 - 1 Argentinos",
+        goles: [
+          { minuto: "29'", jugador: "Ramón 'Wanchope' Ábila", equipo: "boca" },
+          { minuto: "54'", jugador: "Santiago Silva", equipo: "rival" }
+        ],
+        cronica: "Duelo directo entre los dos líderes del certamen. Boca se puso en ventaja pero el 'Tanque' Silva aplicó la ley del ex con una vaselina exquisita."
+      },
+      {
+        id: 10,
+        year: "2020",
+        fecha: "08/02/2020",
+        torneo: "Superliga 2019/20 • Fecha 19",
+        rival: "Atlético Tucumán",
+        marcador: "Boca 2 - 0 Atl. Tucumán",
+        goles: [
+          { minuto: "22'", jugador: "Franco Soldano", equipo: "boca" },
+          { minuto: "90+5'", jugador: "Ramón Ábila (penal)", equipo: "boca" }
+        ],
+        cronica: "Bajo la conducción de Miguel Ángel Russo, Boca siguió a paso firme en su racha de victorias para disputar palmo a palmo el título."
+      },
+      {
+        id: 11,
+        year: "2020",
+        fecha: "07/03/2020",
+        torneo: "Superliga 2019/20 • Fecha 23 (Última)",
+        rival: "Gimnasia LP",
+        marcador: "Boca 1 - 0 Gimnasia (¡CAMPEÓN!)",
+        goles: [
+          { minuto: "72'", jugador: "Carlos Tevez", equipo: "boca" }
+        ],
+        cronica: "Noche histórica inolvidable. Homenaje a Diego Armando Maradona en el banco rival y bombazo de Tevez a los 72' para coronar a Boca campeón arrebatándole el título a River en la última fecha."
+      },
+      {
+        id: 12,
+        year: "2021",
+        fecha: "20/10/2021",
+        torneo: "Liga Profesional 2021 • Fecha 17",
+        rival: "Godoy Cruz",
+        marcador: "Boca 2 - 1 Godoy Cruz",
+        goles: [
+          { minuto: "10'", jugador: "Tomás Badaloni", equipo: "rival" },
+          { minuto: "38'", jugador: "Frank Fabra", equipo: "boca" },
+          { minuto: "45+1'", jugador: "Luis Vázquez", equipo: "boca" }
+        ],
+        cronica: "Boca empezó abajo temprano pero lo dio vuelta antes del descanso con una gran definición de Fabra y la contundencia de Luis Vázquez."
+      },
+      {
+        id: 13,
+        year: "2021",
+        fecha: "20/11/2021",
+        torneo: "Liga Profesional 2021 • Fecha 21",
+        rival: "Sarmiento de Junín",
+        marcador: "Boca 2 - 0 Sarmiento",
+        goles: [
+          { minuto: "25'", jugador: "Luis Vázquez", equipo: "boca" },
+          { minuto: "46'", jugador: "Frank Fabra", equipo: "boca" }
+        ],
+        cronica: "Victoria sólida y tranquila. Vázquez ratificó su gran momento goleador y Fabra armó una brillante jugada individual al iniciar el complemento."
+      },
+      {
+        id: 14,
+        year: "2022",
+        fecha: "02/04/2022",
+        torneo: "Copa de la Liga 2022 • Fecha 8",
+        rival: "Arsenal de Sarandí",
+        marcador: "Boca 2 - 2 Arsenal",
+        goles: [
+          { minuto: "34'", jugador: "Luis Vázquez", equipo: "boca" },
+          { minuto: "62'", jugador: "Sebastián Lomónaco", equipo: "rival" },
+          { minuto: "74'", jugador: "Marcos Rojo (penal)", equipo: "boca" },
+          { minuto: "76'", jugador: "Cristian Colmán", equipo: "rival" }
+        ],
+        cronica: "Partido de ida y vuelta con múltiples errores defensivos. Boca estuvo dos veces arriba pero Arsenal respondió inmediatamente para sellar la igualdad."
+      },
+      {
+        id: 15,
+        year: "2022",
+        fecha: "12/04/2022",
+        torneo: "Copa Libertadores • Fase de Grupos",
+        rival: "Always Ready",
+        marcador: "Boca 2 - 0 Always Ready",
+        goles: [
+          { minuto: "25'", jugador: "Darío Benedetto", equipo: "boca" },
+          { minuto: "90+6'", jugador: "Darío Benedetto", equipo: "boca" }
+        ],
+        cronica: "Primer triunfo en la copa con doblete del 'Pipa' Benedetto, quien aprovechó la superioridad numérica tras la expulsión de Flores en el elenco visitante."
+      },
+      {
+        id: 16,
+        year: "2022",
+        fecha: "17/05/2022",
+        torneo: "Copa Libertadores • Fase de Grupos",
+        rival: "Corinthians",
+        marcador: "Boca 1 - 1 Corinthians",
+        goles: [
+          { minuto: "16'", jugador: "Du Queiroz", equipo: "rival" },
+          { minuto: "42'", jugador: "Darío Benedetto", equipo: "boca" }
+        ],
+        cronica: "Encuentro muy picante y disputado. Boca dominó gran parte del segundo tiempo con un hombre más pero no logró quebrar el cerrojo defensivo del conjunto brasileño."
+      },
+      {
+        id: 17,
+        year: "2022",
+        fecha: "01/07/2022",
+        torneo: "Liga Profesional 2022 • Fecha 6",
+        rival: "Banfield",
+        marcador: "Boca 0 - 3 Banfield",
+        goles: [
+          { minuto: "17'", jugador: "Giuliano Galoppo", equipo: "rival" },
+          { minuto: "34'", jugador: "Ramiro Enrique", equipo: "rival" },
+          { minuto: "38'", jugador: "Ramiro Enrique", equipo: "rival" }
+        ],
+        cronica: "Caída con equipo alternativo pensando en la revancha de octavos de Copa Libertadores. Banfield aprovechó cada desatención en la primera etapa con una noche inspirada de Enrique."
+      },
+      {
+        id: 18,
+        year: "2022",
+        fecha: "28/08/2022",
+        torneo: "Liga Profesional 2022 • Fecha 16",
+        rival: "Atlético Tucumán",
+        marcador: "Boca 2 - 1 Atl. Tucumán",
+        goles: [
+          { minuto: "16'", jugador: "Augusto Lotti", equipo: "rival" },
+          { minuto: "77'", jugador: "Luca Langoni", equipo: "boca" },
+          { minuto: "87'", jugador: "Luca Langoni", equipo: "boca" }
+        ],
+        cronica: "La noche consagratoria de Luca Langoni. El juvenil ingresó desde el banco y metió un doblete memorable para tumbar al puntero del torneo e iniciar la remontada rumbo al campeonato."
+      },
+      {
+        id: 19,
+        year: "2023",
+        fecha: "29/01/2023",
+        torneo: "Liga Profesional 2023 • Fecha 1",
+        rival: "Atlético Tucumán",
+        marcador: "Boca 1 - 0 Atl. Tucumán",
+        goles: [
+          { minuto: "69'", jugador: "Óscar Romero", equipo: "boca" }
+        ],
+        cronica: "Estreno con triunfo en el campeonato doméstico gracias a un contraataque letal encabezado por Villa y empujado por el paraguayo Óscar Romero."
+      },
+      {
+        id: 20,
+        year: "2025",
+        fecha: "17/03/2025",
+        torneo: "Torneo Apertura 2025 • Fecha 10",
+        rival: "Defensa y Justicia",
+        marcador: "Boca 4 - 0 Defensa y Justicia",
+        goles: [
+          { minuto: "14'", jugador: "Edinson Cavani", equipo: "boca" },
+          { minuto: "36'", jugador: "Miguel Merentiel", equipo: "boca" },
+          { minuto: "62'", jugador: "Kevin Zenón", equipo: "boca" },
+          { minuto: "81'", jugador: "Milton Giménez", equipo: "boca" }
+        ],
+        cronica: "Goleada categórica y fiesta en las tribunas para quedar en lo más alto de la tabla. Boca arrolló con un fútbol dinámico y una contundencia implacable de sus atacantes."
+      },
+      {
+        id: 21,
+        year: "2025",
+        fecha: "07/12/2025",
+        torneo: "Torneo Clausura 2025 • Semifinal",
+        rival: "Racing Club",
+        marcador: "Boca 0 - 1 Racing Club",
+        goles: [
+          { minuto: "75'", jugador: "Adrián Martínez", equipo: "rival" }
+        ],
+        cronica: "Semifinal a todo o nada con marco impresionante. Boca buscó romper el cero durante todo el trámite, pero la visita pegó de contragolpe a 15' del final mediante un cabezazo de Maravilla Martínez."
+      },
+      {
+        id: 22,
+        year: "2026",
+        fecha: "11/04/2026",
+        torneo: "Torneo Apertura 2026 • Fecha 14",
+        rival: "Independiente",
+        marcador: "Boca 1 - 1 Independiente",
+        goles: [
+          { minuto: "9'", jugador: "Matías Abaldo", equipo: "rival" },
+          { minuto: "45+3'", jugador: "Milton Giménez (penal)", equipo: "boca" }
+        ],
+        cronica: "Clásico caliente y muy disputado en La Bombonera. Abaldo adelantó tempranamente a la visita y Boca igualó sobre el cierre del primer tiempo con un penal ejecutado por Milton Giménez tras intervención del VAR."
+      }
+    ];
+
+    let currentYear = 'todos';
+
+    function setYear(year) {
+      currentYear = year;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.toLowerCase() === year);
+      });
+      handleFilter();
+    }
+
+    function handleFilter() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const filtered = partidos.filter(p => {
+        const matchesYear = currentYear === 'todos' || p.year === currentYear;
+        const matchesQuery = p.rival.toLowerCase().includes(query) || p.torneo.toLowerCase().includes(query);
+        return matchesYear && matchesQuery;
+      });
+      render(filtered);
+    }
+
+    function render(list) {
+      const container = document.getElementById('matchesContainer');
+      if (list.length === 0) {
+        container.innerHTML = '<div class="empty-state">No se encontraron partidos con ese criterio en este año.</div>';
+        return;
+      }
+
+      container.innerHTML = list.map(p => `
+        <article class="match-card" onclick="this.classList.toggle('open')">
+          <div class="match-header">
+            <div class="match-info">
+              <span class="match-meta">${p.fecha} • ${p.torneo}</span>
+              <h2 class="match-rival">${p.rival}</h2>
+            </div>
+            <div class="score-badge">
+              <span class="score-text">${p.marcador.split(' (')[0].replace('Boca ', '')}</span>
+              <span class="arrow-icon">▼</span>
+            </div>
+          </div>
+          <div class="match-details">
+            <div class="section-label">Goles e Incidencias</div>
+            <div class="goals-container">
+              <ul class="goals-list">
+                ${p.goles.length > 0
+                  ? p.goles.map(g => `
+                      <li class="goal-row">
+                        <span class="goal-min">${g.minuto}</span>
+                        <span>⚽</span>
+                        <span class="tag-team ${g.equipo}">${g.equipo === 'boca' ? 'Boca' : p.rival.split(' ')[0]}</span>
+                        <span class="goal-player">${g.jugador}</span>
+                      </li>
+                    `).join('')
+                  : '<li class="no-goals">Sin goles convertidos</li>'
+                }
+              </ul>
+            </div>
+            <div class="section-label">Crónica del partido</div>
+            <p class="match-story">${p.cronica}</p>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    render(partidos);
+  </script>
+</body>
+</html>
