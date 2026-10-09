@@ -34,6 +34,15 @@ header p{margin:0;color:var(--muted);max-width:60ch}
 .stats{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
 .stat{font-family:var(--head);font-weight:700;font-size:18px;letter-spacing:.04em;text-transform:uppercase;padding:4px 12px;border-radius:4px;font-variant-numeric:tabular-nums}
 .stat.w{background:var(--win-bg);color:var(--win)}.stat.d{background:var(--draw-bg);color:var(--draw)}.stat.l{background:var(--loss-bg);color:var(--loss)}.stat.n{background:var(--flag-bg);color:var(--blue)}
+button.stat{border:0;border-radius:4px;cursor:pointer;font-size:18px;padding:4px 12px;letter-spacing:.04em;box-shadow:inset 0 0 0 2px transparent}
+button.stat:disabled{opacity:.45;cursor:default}
+button.stat[aria-pressed="true"]{box-shadow:inset 0 0 0 2px currentColor}
+.comps{margin-top:8px}
+.comps .stat{background:var(--flag-bg);color:var(--blue)}
+.tools .btns{display:flex;gap:8px;flex-wrap:wrap}
+.teamsel{font-family:var(--head);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:15px;color:var(--muted);display:flex;align-items:center;gap:8px}
+select{font:inherit;font-family:var(--head);font-weight:700;font-size:17px;letter-spacing:.04em;text-transform:uppercase;background:var(--surface);color:var(--fg);border:1.5px solid var(--blue);border-radius:4px;padding:5px 8px;max-width:100%}
+.empty{color:var(--muted);margin:16px 0}
 .panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;margin-top:18px;overflow:hidden}
 .panel div{background:var(--surface);padding:10px 14px;min-width:0}
 .panel b{display:block;font-family:var(--head);text-transform:uppercase;letter-spacing:.1em;font-size:14px;color:var(--muted);font-weight:700}
@@ -45,6 +54,7 @@ button{font:inherit;font-family:var(--head);font-weight:700;letter-spacing:.06em
 button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 h2{font-family:var(--head);font-size:34px;font-weight:700;color:var(--blue);margin:28px 0 8px;display:flex;align-items:baseline;gap:12px}
 h2::after{content:"";flex:1;height:1px;background:var(--line)}
+[hidden]{display:none!important}
 .match{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--line);border-radius:4px;margin-bottom:8px}
 .match.w{border-left-color:var(--win)}.match.d{border-left-color:var(--gold)}.match.l{border-left-color:var(--loss)}.match.q{border-left-color:var(--blue);border-style:dashed}
 summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto auto;gap:4px 14px;align-items:center;padding:12px 14px}
@@ -82,11 +92,12 @@ footer p{margin:0 0 8px;max-width:64ch}
 <header>
   <div class="kicker">La Bombonera · Álbum de cancha</div>
   <h1>Mis partidos en la Bombonera</h1>
-  <p>Reconstruido a partir de las fechas de mis fotos. Tocá un partido para ver los goles y cómo se dio. El marcador siempre se lee con Boca primero.</p>
   <div class="stats" id="stats"></div>
+  <div class="stats comps" id="comps"></div>
   <div class="panel" id="panel"></div>
 </header>
-<div class="tools"><small id="count"></small><button id="toggle" type="button">Abrir todos</button></div>
+<div class="tools"><label class="teamsel">Equipo <select id="team"></select></label><small id="count" aria-live="polite"></small><span class="btns"><button id="clear" type="button" hidden>Quitar filtros</button><button id="toggle" type="button">Abrir todos</button></span></div>
+<p class="empty" id="empty" hidden>Ningún partido cumple esos filtros.</p>
 <main id="list"></main>
 <footer>
   <p><strong>Qué está verificado.</strong> Fecha, rival, torneo, resultado y goleadores salen de crónicas de prensa de cada partido. Los minutos de los goles son corridos (el 54' es el 9' del segundo tiempo) y salen de la ficha de BeSoccer; donde otra fuente difiere, se indica al lado. Para el 26/5/2019 y el 15/9/2019 el minuto sale de crónicas de prensa, y para el 8/2/2020 de La Voz de San Justo. Convirtieron de penal Benedetto (10/4/2019), Ábila (8/2/2020), Marcos Rojo (2/4/2022) y Milton Giménez (11/4/2026). El cuarto gol del 10/4/2019 lo registra la prensa como en contra de Alex Silva (Wilstermann) y BeSoccer lo anota para Zárate; en las estadísticas cuenta como gol en contra.</p>
@@ -196,8 +207,8 @@ M.forEach(function(m){
     var cb=m.g.filter(function(x){return x[0]===B}).length,cr=m.g.length-cb;
     if(cb!==m.s[0]||cr!==m.s[1])console.warn("Goles no coinciden:",m.d,m.r);
     m.g.forEach(function(x){if(x[0]===B&&!x[3])scorers[x[1]]=(scorers[x[1]]||0)+1});if(m.lib)libY[m.y]=(libY[m.y]||0)+1;}
-  if(m.y!==cur){cur=m.y;var h=document.createElement("h2");h.textContent=cur;list.appendChild(h)}
-  var det=document.createElement("details");det.className="match "+k;
+  if(m.y!==cur){cur=m.y;var h=document.createElement("h2");h.textContent=cur;h.dataset.year=cur;list.appendChild(h)}
+  var det=document.createElement("details");det.className="match "+k;det.dataset.res=k;det.dataset.team=m.r;det.dataset.comp=m.lib?"lib":m.sud?"sud":m.amis?"ami":m.arg?"arg":"tor";det.dataset.year=m.y;
   var sc=m.s?m.s[0]+"-"+m.s[1]:"?";
   var gh=m.s?(m.g.length?'<ul class="goals">'+m.g.map(function(x){return '<li><span class="eq '+x[0]+'">'+(x[0]===B?"Boca":esc(m.r))+'</span><span class="who">'+esc(x[1])+' <i>'+esc(x[2])+'</i></span></li>'}).join("")+'</ul>':'<p class="nogoal">Sin goles.</p>'):"";
   det.innerHTML='<summary><span class="date">'+m.d+'</span><span class="rival">'+(k==="q"?"Partido sin confirmar":"vs "+esc(m.r))+'</span><span class="score">'+sc+'</span><span class="chev"></span><span class="comp">'+(m.lib?'<span class="lib">Libertadores</span>':'')+(m.sud?'<span class="lib">Sudamericana</span>':'')+(m.sc?'<span class="sc">Superclásico</span>':'')+(m.h?'<span class="nt">🌙 '+m.h+' h</span>':'')+'<span>'+esc(m.c)+'</span></span></summary>'+
@@ -206,7 +217,9 @@ M.forEach(function(m){
 });
 var conf=M.length-n.q;
 document.getElementById("stats").innerHTML=
- '<span class="stat n">'+conf+' partidos</span><span class="stat w">'+n.w+' G</span><span class="stat d">'+n.d+' E</span><span class="stat l">'+n.l+' P</span>';
+ '<button type="button" class="stat n" data-f="res" data-v="">'+conf+' partidos</button><button type="button" class="stat w" data-f="res" data-v="w">'+n.w+' G</button><button type="button" class="stat d" data-f="res" data-v="d">'+n.d+' E</button><button type="button" class="stat l" data-f="res" data-v="l">'+n.l+' P</button>';
+var cn={lib:0,sud:0,arg:0,tor:0,ami:0};M.forEach(function(m){cn[m.lib?"lib":m.sud?"sud":m.amis?"ami":m.arg?"arg":"tor"]++});
+document.getElementById("comps").innerHTML=[["lib","Libertadores"],["sud","Sudamericana"],["arg","Copa Argentina"],["tor","Torneo"],["ami","Amistoso"]].map(function(c){return '<button type="button" class="stat" data-f="comp" data-v="'+c[0]+'"'+(cn[c[0]]?'':' disabled')+'>'+c[1]+' · '+cn[c[0]]+'</button>'}).join("");
 var maxR=Math.max.apply(null,Object.keys(rivals).map(function(k){return rivals[k]}));
 var topR=Object.keys(rivals).filter(function(k){return rivals[k]===maxR});
 var maxG=Math.max.apply(null,Object.keys(scorers).map(function(k){return scorers[k]}));
@@ -216,10 +229,26 @@ document.getElementById("panel").innerHTML=
  '<div><b>Goles</b><span>'+gf+' a favor · '+gc+' en contra</span></div>'+
  '<div><b>Rival más visto</b><span>'+topR.join(" / ")+' · '+maxR+' veces</span></div>'+
  '<div><b>Superclásicos</b><span>'+scN+'</span><small>Boca-River: 22/10/2019 y 09/11/2025</small></div>'+
- '<div><b>De Libertadores</b><span>'+libN+' partidos</span><small>'+Object.keys(libY).map(function(y){return y+': '+libY[y]}).join(' · ')+'</small></div>'+
  '<div><b>Goleadores de Boca</b><span>'+topG.join(", ")+'</span><small>'+maxG+' goles cada uno en los partidos que viste (sin contar el gol en contra)</small></div>'+
  '<div><b>Rendimiento</b><span>'+pct+'%</span><small>de los puntos posibles</small></div>';
-document.getElementById("count").textContent=conf+" partidos";
+var F={res:"",comp:"",team:""},sel=document.getElementById("team");
+sel.innerHTML='<option value="">Todos</option>'+Object.keys(rivals).sort().map(function(k){return '<option value="'+esc(k).replace(/"/g,"&quot;")+'">'+esc(k)+' ('+rivals[k]+')</option>'}).join("");
+function apply(){
+  var shown=0,yrs={};
+  list.querySelectorAll("details").forEach(function(d){
+    var ok=(!F.res||d.dataset.res===F.res)&&(!F.comp||d.dataset.comp===F.comp)&&(!F.team||d.dataset.team===F.team);
+    d.hidden=!ok;if(ok){shown++;yrs[d.dataset.year]=1}});
+  list.querySelectorAll("h2").forEach(function(h){h.hidden=!yrs[h.dataset.year]});
+  document.querySelectorAll("button.stat").forEach(function(b){var f=b.dataset.f,v=b.dataset.v;b.setAttribute("aria-pressed",String(v===""?(!F.res&&!F.comp&&!F.team):F[f]===v))});
+  var any=F.res||F.comp||F.team;
+  document.getElementById("count").textContent=any?shown+" de "+conf+" partidos":conf+" partidos";
+  document.getElementById("clear").hidden=!any;document.getElementById("empty").hidden=shown>0;
+}
+document.querySelector("header").addEventListener("click",function(e){var b=e.target.closest("button.stat");if(!b||b.disabled)return;var f=b.dataset.f,v=b.dataset.v;
+  if(v===""){F.res=F.comp=F.team="";sel.value=""}else F[f]=(F[f]===v)?"":v;apply()});
+sel.addEventListener("change",function(){F.team=sel.value;apply()});
+document.getElementById("clear").addEventListener("click",function(){F.res=F.comp=F.team="";sel.value="";apply()});
+apply();
 var btn=document.getElementById("toggle"),allOpen=false;
 btn.addEventListener("click",function(){allOpen=!allOpen;list.querySelectorAll("details").forEach(function(d){d.open=allOpen});btn.textContent=allOpen?"Cerrar todos":"Abrir todos"});
 </script>
