@@ -87,15 +87,17 @@ footer p{margin:0 0 8px;max-width:64ch}
 <div class="tools"><small id="count"></small><button id="toggle" type="button">Abrir todos</button></div>
 <main id="list"></main>
 <footer>
-  <p><strong>Qué está verificado.</strong> Fecha, rival, torneo, resultado, goleadores y minutos salen de crónicas de prensa de cada partido. Los minutos del segundo tiempo figuran como "2T" cuando la fuente los daba así. Marcos Rojo y Ábila (8/2/2020) convirtieron de penal; Milton Giménez también (11/4/2026).</p>
+  <p><strong>Qué está verificado.</strong> Fecha, rival, torneo, resultado, goleadores y minutos salen de crónicas de prensa de cada partido. Los minutos del segundo tiempo figuran como "2T" cuando la fuente los daba así. Convirtieron de penal Benedetto (10/4/2019), Ábila (8/2/2020), Marcos Rojo (2/4/2022) y Milton Giménez (11/4/2026). En el 10/4/2019 el cuarto gol fue en contra, de Alex Silva (Wilstermann).</p>
   <p><strong>Clima y horario: sin dato.</strong> Las crónicas no informan lluvia, calor ni hora de inicio, y no pude consultar un historial meteorológico. Prefiero no mostrar símbolos inventados; si me pasás un dato confirmado de algún partido, lo agrego.</p>
-  <p>La foto del 17/03/2025 no coincide con ningún partido de Boca en esa fecha: el más cercano es el del 16/03/2025 (Boca 4-0 Defensa y Justicia). Queda marcada y no cuenta en el resumen.</p>
 </footer>
 </div>
 
 <script>
 var B="b",R="r";
 var M=[
+{y:2019,d:"10/04",r:"Jorge Wilstermann",s:[4,0],lib:1,c:"Copa Libertadores 2019 · Fase de grupos",
+ g:[[B,"Emanuel Reynoso","36' (cabezazo, centro de Buffarini)"],[B,"Darío Benedetto","2T, al comienzo (penal)"],[B,"Mauro Zárate","2T, sobre el final"],[B,"Alex Silva","90' (en contra, tras un centro de Pavón)",1]],
+ t:"Goleada en el grupo de la Libertadores. Benedetto había fallado un penal a los 31' (lo atajó Arnaldo Giménez) y se redimió con otro al empezar el segundo tiempo. Boca llegaba de perder con Athletico Paranaense en Curitiba la semana anterior; con esta victoria sumó 7 puntos, a 2 del líder. Fue la primera derrota de Wilstermann ante Boca en cuatro enfrentamientos."},
 {y:2019,d:"09/05",r:"Athletico Paranaense",s:[2,1],lib:1,c:"Copa Libertadores 2019 · Fase de grupos",
  g:[[R,"Marco Ruben","65'"],[B,"Lisandro López","72'"],[B,"Carlos Tevez","90+4'"]],
  t:"Athletico se adelantó con gol de Ruben, Boca lo dio vuelta con López y lo ganó con un gol de Tevez en el cuarto minuto de descuento. Wellington, de Athletico, fue expulsado a los 79'. El triunfo dejó a Boca clasificado a octavos como primero de su grupo."},
@@ -151,31 +153,52 @@ var M=[
 {y:2023,d:"29/01",r:"Atlético Tucumán",s:[1,0],c:"Liga Profesional 2023 · Primera fecha",
  g:[[B,"Óscar Romero","2T 24'"]],
  t:"Debut de Boca, campeón vigente, en la Liga Profesional 2023, con Hugo Ibarra como técnico. Lo ganó con un gol del paraguayo Óscar Romero en el segundo tiempo ante el Tucumán de Lucas Pusineri."},
-{y:2025,d:"17/03",r:"A verificar",s:null,c:"Fecha de la foto sin partido confirmado",g:[],
- t:"No encontré ningún partido de Boca en La Bombonera el 17/03/2025.",
- warn:"El partido más cercano es Boca 4-0 Defensa y Justicia, del 16/03/2025. Puede ser que la foto esté fechada un día después (por zona horaria o por cómo se guardó) o que sea de otra salida. Si recordás el partido, corregilo y lo actualizo."},
+{y:2025,d:"02/02",r:"Huracán",s:[2,1],c:"Torneo Apertura 2025 · Fecha 3",
+ g:[[B,"Edinson Cavani","(tiro libre)"],[B,"Carlos Palacios","(su primer gol en el club)"],[R,"Marco Pellegrino","(descontó, con intervención del VAR)"]],
+ t:"Primera victoria de Boca en el Apertura 2025, después de dos empates (0-0 con Argentinos y 1-1 con Unión). La crónica no da los minutos; los goles van en el orden en que la nota los cuenta. Con esto Boca llegó a 5 puntos y Huracán seguía sin ganar."},
+{y:2025,d:"09/08",r:"Racing Club",s:[1,1],c:"Torneo Clausura 2025 · Fecha 4",
+ g:[[R,"Santiago Solari","76'"],[B,"Milton Giménez","88'"]],
+ t:"Racing se adelantó a los 76' y Boca lo igualó sobre el final con un gol de Milton Giménez a los 88'."},
+{y:2025,d:"05/10",r:"Newell's Old Boys",s:[5,0],c:"Torneo Clausura 2025 · Fecha 11",
+ g:[[B,"Milton Giménez","1T"],[B,"Milton Giménez","1T"],[B,"Ayrton Costa","1T (cabezazo tras un córner)"],[B,"Brian Aguirre","2T"],[B,"Lautaro Blanco","2T"]],
+ t:"Goleada 5-0. Boca pasó del 9º al 1º puesto de la Zona A, igualado en la cima con Unión, Estudiantes y Barracas Central. Newell's no recibía cinco goles en un partido desde 2015. Las fuentes difieren en los minutos de los goles, por eso no los indico."},
+{y:2025,d:"09/11",r:"River Plate",s:[2,0],sc:1,c:"Torneo Clausura 2025 · Fecha 15",
+ g:[[B,"Exequiel Zeballos","1T, cerca del cierre (tras un error de Paulo Díaz)"],[B,"Miguel Merentiel","2T, al comienzo (asistencia de Zeballos)"]],
+ t:"El Superclásico fue para Boca. Zeballos abrió antes del descanso y Merentiel amplió al arrancar el segundo tiempo. A los 34' del segundo tiempo el árbitro Nicolás Ramírez sancionó un penal para Boca, pero lo revirtió tras revisar el VAR. Con el triunfo Boca quedó líder de la Zona A con 26 puntos y aseguró su regreso a la Libertadores 2026. Asistieron más de 50.000 hinchas."},
 {y:2025,d:"07/12",r:"Racing Club",s:[0,1],c:"Torneo Clausura 2025 · Semifinal",
  g:[[R,"Adrián Martínez","2T 30' (cabezazo, centro de Gabriel Rojas)"]],
  t:"Semifinal de partido único. Racing ganó con un cabezazo de 'Maravilla' Martínez y eliminó a Boca. Claudio Úbeda sacó a Zeballos para meter a Alan Velasco, una decisión que los hinchas resistieron."},
 {y:2026,d:"11/04",r:"Independiente",s:[1,1],c:"Torneo Apertura 2026 · Zona A",
  g:[[R,"Matías Abaldo","9'"],[B,"Milton Giménez","45+10' (penal)"]],
- t:"Boca igualó sobre la hora con un penal polémico, sancionado tras revisión del VAR por una falta de Sebastián Valdez a Alan Velasco. El técnico de Independiente, Gustavo Quinteros, fue expulsado por protestar. Boca quedó tercero de la Zona A con 22 puntos."}
+ t:"Boca igualó sobre la hora con un penal polémico, sancionado tras revisión del VAR por una falta de Sebastián Valdez a Alan Velasco. El técnico de Independiente, Gustavo Quinteros, fue expulsado por protestar. Boca quedó tercero de la Zona A con 22 puntos."},
+{y:2026,d:"14/04",r:"Barcelona SC",s:[3,0],lib:1,c:"Copa Libertadores 2026 · Grupo D, fecha 2",
+ g:[[B,"Di Lollo","39' (centro de Blanco)"],[B,"Ascacibar","81'"],[B,"Herrera","90+4'"]],
+ t:"Boca se afirmó como líder del Grupo D con 6 puntos, el máximo posible. El arquero de Boca se retiró lesionado a los 12' y entró Leandro Brey. José Contreras, arquero de Barcelona, fue la figura visitante con varias atajadas. Lautaro Blanco dio dos asistencias. Esta crónica es la única fuente que tengo para este partido, así que tomá los nombres y minutos con ese margen."},
+{y:2026,d:"19/05",r:"Cruzeiro",s:[1,1],lib:1,c:"Copa Libertadores 2026 · Grupo D, fecha 5",
+ g:[[B,"Miguel Merentiel","1T 15' (tras un tiro libre de Leandro Paredes)"],[R,"Fagner","2T 8'-9' (las fuentes difieren)"]],
+ t:"Boca se había adelantado y Cruzeiro empató en el segundo tiempo. Gerson, de Cruzeiro, fue expulsado a los 22' del segundo tiempo por una fuerte infracción sobre Paredes. Cerca del final, Merentiel marcó el 2-1 pero el VAR lo anuló por una mano previa de Milton Delgado, una decisión muy discutida."},
+{y:2026,d:"28/05",r:"Universidad Católica",s:[0,1],lib:1,c:"Copa Libertadores 2026 · Grupo D, fecha 6 (última)",
+ g:[[R,"Clemente Montes","33'"]],
+ t:"Boca necesitaba ganar para seguir en la Libertadores y perdió 1-0. Católica se clasificó a octavos como líder del grupo y Cruzeiro fue segundo con 11 puntos. Boca quedó eliminado de la Libertadores y pasó a jugar los playoffs de la Copa Sudamericana."},
+{y:2026,d:"23/07",r:"O'Higgins",s:[1,0],sud:1,c:"Copa Sudamericana 2026 · Playoffs de octavos (ida)",
+ g:[[B,"Miguel Merentiel","1T 44' (asistencia de Leandro Paredes)"]],
+ t:"Boca ganó la ida en La Bombonera. En la vuelta, en Rancagua, O'Higgins ganó 1-0 con gol de Francisco González, así que la serie quedó 1-1 y Boca avanzó por penales 4-3: Álvaro Montero le atajó el suyo a Luis Pavez y Lautaro Blanco convirtió el decisivo."}
 ];
 function res(m){if(!m.s)return"q";return m.s[0]>m.s[1]?"w":m.s[0]<m.s[1]?"l":"d"}
 var LBL={w:"Victoria",d:"Empate",l:"Derrota",q:"A verificar"};
-var list=document.getElementById("list"),cur=null,n={w:0,d:0,l:0,q:0},gf=0,gc=0,rivals={},scorers={},libN=0,scN=0,libPts=0;
+var list=document.getElementById("list"),cur=null,n={w:0,d:0,l:0,q:0},gf=0,gc=0,rivals={},scorers={},libN=0,scN=0,libY={};
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
 M.forEach(function(m){
   var k=res(m);n[k]++;
   if(m.s){gf+=m.s[0];gc+=m.s[1];rivals[m.r]=(rivals[m.r]||0)+1;if(m.lib)libN++;if(m.sc)scN++;
     var cb=m.g.filter(function(x){return x[0]===B}).length,cr=m.g.length-cb;
     if(cb!==m.s[0]||cr!==m.s[1])console.warn("Goles no coinciden:",m.d,m.r);
-    m.g.forEach(function(x){if(x[0]===B)scorers[x[1]]=(scorers[x[1]]||0)+1});}
+    m.g.forEach(function(x){if(x[0]===B&&!x[3])scorers[x[1]]=(scorers[x[1]]||0)+1});if(m.lib)libY[m.y]=(libY[m.y]||0)+1;}
   if(m.y!==cur){cur=m.y;var h=document.createElement("h2");h.textContent=cur;list.appendChild(h)}
   var det=document.createElement("details");det.className="match "+k;
   var sc=m.s?m.s[0]+"-"+m.s[1]:"?";
   var gh=m.s?(m.g.length?'<ul class="goals">'+m.g.map(function(x){return '<li><span class="eq '+x[0]+'">'+(x[0]===B?"Boca":esc(m.r))+'</span><span class="who">'+esc(x[1])+' <i>'+esc(x[2])+'</i></span></li>'}).join("")+'</ul>':'<p class="nogoal">Sin goles.</p>'):"";
-  det.innerHTML='<summary><span class="date">'+m.d+'</span><span class="rival">'+(k==="q"?"Partido sin confirmar":"vs "+esc(m.r))+'</span><span class="score">'+sc+'</span><span class="chev"></span><span class="comp">'+(m.lib?'<span class="lib">Libertadores</span>':'')+(m.sc?'<span class="sc">Superclásico</span>':'')+'<span>'+esc(m.c)+'</span></span></summary>'+
+  det.innerHTML='<summary><span class="date">'+m.d+'</span><span class="rival">'+(k==="q"?"Partido sin confirmar":"vs "+esc(m.r))+'</span><span class="score">'+sc+'</span><span class="chev"></span><span class="comp">'+(m.lib?'<span class="lib">Libertadores</span>':'')+(m.sud?'<span class="lib">Sudamericana</span>':'')+(m.sc?'<span class="sc">Superclásico</span>':'')+'<span>'+esc(m.c)+'</span></span></summary>'+
   '<div class="body"><span class="tag '+k+'">'+LBL[k]+'</span>'+gh+'<p>'+esc(m.t)+'</p>'+(m.warn?'<div class="warn">'+esc(m.warn)+'</div>':'')+'</div>';
   list.appendChild(det);
 });
@@ -190,11 +213,11 @@ var pct=Math.round(100*(n.w*3+n.d)/(conf*3));
 document.getElementById("panel").innerHTML=
  '<div><b>Goles</b><span>'+gf+' a favor · '+gc+' en contra</span></div>'+
  '<div><b>Rival más visto</b><span>'+topR.join(" / ")+' · '+maxR+' veces</span></div>'+
- '<div><b>Superclásicos</b><span>'+scN+'</span><small>Boca-River, 22/10/2019</small></div>'+
- '<div><b>De Libertadores</b><span>'+libN+' partidos</span><small>2019: 4 · 2022: 2</small></div>'+
- '<div><b>Goleadores de Boca</b><span>'+topG.join(", ")+'</span><small>'+maxG+' goles cada uno, en los partidos que viste</small></div>'+
+ '<div><b>Superclásicos</b><span>'+scN+'</span><small>Boca-River: 22/10/2019 y 09/11/2025</small></div>'+
+ '<div><b>De Libertadores</b><span>'+libN+' partidos</span><small>'+Object.keys(libY).map(function(y){return y+': '+libY[y]}).join(' · ')+'</small></div>'+
+ '<div><b>Goleadores de Boca</b><span>'+topG.join(", ")+'</span><small>'+maxG+' goles cada uno en los partidos que viste (sin contar el gol en contra)</small></div>'+
  '<div><b>Rendimiento</b><span>'+pct+'%</span><small>de los puntos posibles</small></div>';
-document.getElementById("count").textContent=conf+" partidos confirmados de "+M.length+" fechas";
+document.getElementById("count").textContent=conf+" partidos";
 var btn=document.getElementById("toggle"),allOpen=false;
 btn.addEventListener("click",function(){allOpen=!allOpen;list.querySelectorAll("details").forEach(function(d){d.open=allOpen});btn.textContent=allOpen?"Cerrar todos":"Abrir todos"});
 </script>
